@@ -1,0 +1,731 @@
+---
+swagger: "2.0"
+info:
+  version: "1.1.0"
+  title: "LIVPARTNER - Partners R42 Private"
+  description: "Apis to connect to R42 partner and perform operations"
+host: "api.k8s"
+basePath: "/partners-r42/v1"
+
+securityDefinitions:
+  PassThrough:
+    type: basic
+
+tags:
+  - name: Card Id 
+  - name: Benefits
+  - name: Redemption
+  - name: Skus
+
+schemes:
+  - "http"
+  - "https"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+paths:
+  /acquisition:
+    post:
+      tags:
+        - "Card Id"
+      summary: "Create a customer in amex plataform"
+      description: "Create a customer if one does not exist in a amex plataform"
+      operationId: "createAquisitionCardId"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          schema:
+            $ref: "#/definitions/CreateCustomerRequest"
+          required: true
+      responses:
+        "202":
+          description: "successful operation"
+        "400":
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/FaultBadRequest"
+        "404":
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/FaultNotFound"
+        "500":
+          description: "Unexpected error"
+          schema:
+            $ref: "#/definitions/FaultInternalServerError"
+      security:
+        - PassThrough: []    
+  /cancell:
+    post:
+      tags:
+        - "Card Id"
+      summary: "Cancell a profile customer in amex plataform"
+      description: "Cancell a profile customer in the loyalty system in R42 plataform"
+      operationId: "cancellAquisitionCardId"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          schema:
+            $ref: "#/definitions/CancelCustomerRequest"
+          required: true
+      responses:
+        "202":
+          description: "successful operation"
+        "400":
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/FaultBadRequest"
+        "404":
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/FaultNotFound"
+        "500":
+          description: "Unexpected error"
+          schema:
+            $ref: "#/definitions/FaultInternalServerError"
+      security:
+        - PassThrough: []    
+  /benefits/search:
+    post:
+      tags:
+        - "Benefits"
+      summary: "Return a list of benefits"
+      description: "Return a list of benefits in partner r42 amex integration"
+      operationId: "getBenefits"
+      produces:
+        - "application/json"
+      parameters:
+          - in: "body"
+            name: "body"
+            schema:
+              $ref: "#/definitions/BenefitsSearchRequest"
+            required: true
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/BenefitsSearchListResponse"
+        "400":
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/FaultBadRequest"
+        "404":
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/FaultNotFound"
+        "500":
+          description: "Unexpected error"
+          schema:
+            $ref: "#/definitions/FaultInternalServerError"
+      security:
+        - PassThrough: []    
+  /pointstransfer/order:
+    post:
+      tags:
+        - "Redemption"
+      summary: "Create an order to redeem points"
+      description: "Create an order to redeem points from a Loyalty account and transfer those points to a Partner account in partner R42"
+      operationId: "createRedeemOrder"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          schema:
+            $ref: "#/definitions/PointsTransferOrderRequest"
+          required: true
+      responses:
+        "201":
+          description: "Created"
+          schema:
+            $ref: "#/definitions/PointsTransferOrderRequest"
+        "400":
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/FaultBadRequest"
+        "404":
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/FaultNotFound"
+        "500":
+          description: "Unexpected error"
+          schema:
+            $ref: "#/definitions/FaultInternalServerError"    
+      security:
+        - PassThrough: []    
+  /skus:
+    post:
+      tags:
+        - "Skus"
+      summary: "Create an Product SKU"
+      description: "Create a Product SKU with importants informations about the same"
+      operationId: "createProductSku"
+      consumes:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          schema:
+            $ref: "#/definitions/ProductSku"
+          required: true
+      responses:
+        "201":
+          description: "Created"
+          schema:
+            $ref: "#/definitions/ProductSku"
+        "400":
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/FaultBadRequest"
+        "404":
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/FaultNotFound"
+        "500":
+          description: "Unexpected error"
+          schema:
+            $ref: "#/definitions/FaultInternalServerError"
+      security:
+        - PassThrough: []    
+  /skus/{skuId}:
+    get:
+      tags:
+        - "Skus"
+      summary: "Find an Product SKU"
+      description: "Find a Product SKU"
+      operationId: "findProductSku"
+      produces:
+        - "application/json"
+      parameters:
+        - name: 'skuId'
+          in: 'path'
+          required: true
+          type: string
+          description: 'SkuId for the Product'
+        - name: 'commerceItemId'
+          in: 'query'
+          required: false
+          type: string
+          description: 'CommerceItemId for the Product'
+        - name: 'currency'
+          in: 'query'
+          required: false
+          type: string
+          description: 'Currency for the Product'
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/ProductSku"
+        "400":
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/FaultBadRequest"
+        "404":
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/FaultNotFound"
+        "500":
+          description: "Unexpected error"
+          schema:
+            $ref: "#/definitions/FaultInternalServerError"                 
+      security:
+        - PassThrough: [] 
+definitions:
+  FaultBadRequest:
+    type: object
+    required:
+      - "code"
+      - "message"
+    properties:
+      code:
+        type: string
+        example: "400"
+        description: "The internal error code used to identify the error"
+      message:
+        type: string
+        example: "BAD_REQUEST"
+        description: "A descriptive message of the error"
+      details:
+        type: array
+        description: "The error details, if there are any, otherwise same as message"
+        example:
+          - "Invalid attribute x"
+          - "Invalid attribute y"
+        items:
+          type: string
+  FaultNotFound:
+    type: object
+    required:
+      - "code"
+      - "message"
+    properties:
+      code:
+        type: string
+        example: "404"
+        description: "The internal error code used to identify the error"
+      message:
+        type: string
+        example: "NOTFOUND"
+        description: "A descriptive message of the error"
+      details:
+        type: array
+        description: "The error details, if there are any, otherwise same as message"
+        example:
+          - "Not found order process"
+        items:
+          type: string
+  FaultInternalServerError:
+    type: object
+    required:
+      - "code"
+      - "message"
+    properties:
+      code:
+        type: string
+        example: "500"
+        description: "The internal error code used to identify the error"
+      message:
+        type: string
+        example: "INTERNAL_SERVER_ERROR"
+        description: "A descriptive message of the error"
+      details:
+        type: array
+        description: "The error details, if there are any, otherwise same as message"
+        example:
+          - "Internal Server Error - An error has ocurred calling R42 API."
+        items:
+          type: string
+  CardAcquisitionRequest:
+      type: object
+      required:
+        - "networkInfo"
+        - "instrument"
+      properties:
+        networkInfo:
+          type: object
+          $ref: "#/definitions/NetworkInfoRequest"
+        applicant:
+          type: string
+          example: "undefined"  
+        productInfo:
+          type: object
+          $ref: "#/definitions/ProductInfoRequest"
+        instrument:
+          type: object
+          properties: 
+            instrumentId:
+              type: string
+              example: "teste"
+            primaryInstrumentId:
+              type: string
+              example: "nova"
+  NetworkInfoRequest:
+    type: object
+    properties: 
+      institutionId:
+        type: string
+        example: "bradesco"
+      networkId:
+        type: string
+        example: "BRA"
+  ProductInfoRequest:
+    type: object
+    properties: 
+      market:
+        type: string
+        example: "101"
+      family:
+        type: string
+        example: "familyMarket"  
+      offering:
+        type: string
+        example: "offering"               
+  CardCancellationRequest:
+    type: object
+    properties:
+      networkInfo:
+        type: object
+        $ref: "#/definitions/NetworkInfoRequest"
+      reasonCode:
+        type: string
+        example: "DEROGCANCEL"
+      instrumentId:
+        type: string
+        example: "instrument"
+  BenefitsSearchRequest:
+    type: object
+    properties: 
+      startDate:
+        type: string
+        description: "RFC3339 format"
+        example: "2019-10-12T07:20:50.52Z"
+      endDate:
+        type: string
+        description: "RFC3339 format"
+        example: "2019-10-12T07:20:50.52Z"
+      status:
+        description: "Status of benefits to apply filter"
+        type: string 
+        enum:
+            - "ACTIVE"
+            - "CANCELLED"
+            - "INACTIVE"
+      filter:
+        description: "Filter of benefits"
+        type: string 
+        enum:
+            - "MANUAL_SUBSCRIPTION"
+            - "SUBSCRIBED"
+      networkInfo:
+          type: object
+          $ref: "#/definitions/NetworkInfoRequest"
+      instrumentId:
+        type: string
+        example: "card Id"
+      instrumentNumber:
+        type: string
+        example: "213545313541654"
+      productInfo:
+        type: object
+        $ref: "#/definitions/ProductInfoRequest"
+  BenefitsSearchListResponse: 
+      type: "array"
+      items:
+        $ref: "#/definitions/BenefitsSearchResponse"
+  BenefitsSearchResponse:
+    type: object
+    properties:
+      id:
+        type: string
+        example: "214654"
+      externalBenefit:
+        type: object
+        properties: 
+          id:
+            type: string
+            example: "546464"
+          system:
+            type: string
+            example: "system"
+      name:
+        type: string
+        example: "American Airlines"
+      startDate:
+        type: string
+        example: "2019-10-12T07:20:50.52Z"
+      endDate:
+        type: string
+        example: "2019-10-12T07:20:50.52Z"
+      instrumentId:
+        type: string
+        example: "cardId"
+      instrumentNumber:
+        type: string
+        example: "0000000021321321"
+      status:
+        type: string
+        example: "ACTIVE"
+      selections:
+        type: "array"
+        items:    
+          properties: 
+            code: 
+              type: string
+              example: "456465"
+            name:
+              type: string
+              example: "AAIRL"
+            description:
+              type: string
+              example: "description selection"
+      content:
+        type: object
+        properties: 
+          contentId:
+            type: string
+            example: "546464"
+          tags:
+            type: "array"
+            items:
+              type: string
+          displayName:
+            type: string
+            example: "display name"
+          shortDescription:
+            type: string
+            example: "A little description of content"
+          longDescription:
+            type: string
+            example: "A long description of content"
+          terms:
+            type: "array"
+            items:
+              properties: 
+                type:
+                  type: "string"
+                  example: "TERMSANDCONDITIONS"
+                text:
+                  type: "string"
+                  example: "The terms text to be returned"
+          images:
+            type: "array"
+            items:
+              properties: 
+                type:
+                  type: "string"
+                  example: "IMAGE_LARGE"
+                href:
+                  type: "string"
+                  example: "http://image"
+          links:
+            type: "array"
+            items:
+              properties: 
+                type:
+                  type: "string"
+                  example: "urlEnrollment"
+                href:
+                  type: "string"
+                  example: "http://link"
+          enrollmentSlaMessage:
+            type: string
+            example: "The time taken by a Partner for enrollment"
+          programDisplayName:
+            type: string
+            example: "The Partner program name for the benefit."
+          partnerDisplayName:
+            type: string
+            example: "The Partner display name for the benefit."
+          externalEnrollment:
+            type: boolean
+          subscriptions:
+            type: "array"
+            items:
+              properties: 
+                subscription:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                      example: "The date, in RFC3339 format, of the subscription into a benefit."
+                    endDate:
+                      type: string
+                      example: "The date, in RFC3339 format, of when the subscription into the benefit will end."
+                    status:
+                      type: string
+                      example: "The status of the subscription."
+                    rejectReason:
+                      type: string
+                      example: "The code for the reject reason if status is FAILED."
+                    selectionName:
+                      type: string
+                      example: "The name for the selection."
+                    selectionCode:
+                      type: string
+                      example: "The code for the selection."
+                    partnerName:
+                      type: string
+                      example: "The name of the Partner."
+                    programCode:
+                      type: string
+                      example: "The Partner information for subscription into a benefit."
+                    programAccountId:
+                      type: string
+                      example: "The Partner Account ID refers to FFN, e.g., the Hilton Honors or BA Executive Club number of the Customer."
+                    qualifiedProgramStatus:
+                      type: string
+                      example: "The program status that the associated benefit qualifies."      
+                    subscriptionId:
+                      type: string
+                      example: "The ID that refers to the benefit subscription of an instrument."
+  PointsTransferOrderRequest:
+    type: object
+    properties:
+      id:
+        type: string
+        example: "A unique identifier for the Transfer Redemption order."
+      programId:
+        type: string
+        example: "A Partner Program ID provided by the channels."
+      programName:
+        type: string
+        example: "The Program name"
+      accountId:
+        type: string
+        example: "The Account ID"
+      cardId:
+        type: string
+        example: "The unique token required to identify the Customer in R42."
+      demographics:
+        type: object
+        properties: 
+          firstName:
+            type: string
+            example: "Gabriel"
+          middleName:
+            type: string
+            example: "Henrique"  
+          lastName:
+            type: string
+            example: "Pereira"
+          dob:
+            type: string
+            example: "This is required to be sent by Network Loyalty GNS for Partners: AFKLM, and Emirates."
+          gender:
+            type: string
+            example: "Male"
+          email:
+            type: string
+            example: "jonathan.henrique.pereira@email.com"
+          title:
+            type: string
+            example: "title"
+          addrLine1:
+            type: string
+            example: "addrLine1"
+          addrLine2:
+            type: string
+            example: "addrLine2"
+          addrLine3:
+            type: string
+            example: "addrLine3"
+          city:
+            type: string
+            example: "São Paulo"
+          state:
+            type: string
+            example: "São Paulo"
+          postalCode:
+            type: string
+            example: "0600009999"
+          country:
+            type: string
+            example: "Brazil"
+          telephone:
+            type: string
+            example: "+55119999-9999"
+      requestorOrderId:
+        type: string
+        example: "A unique identifier for the order"
+      orderDateTime:
+        type: string
+        example: "yyyy-dd-MM'T'HH:mm:ss.SSS'Z'"
+      programAccountId:
+        type: string
+        example: "The Partner Account number"
+      network:
+        type: object
+        properties: 
+          issuerId:
+            type: string
+            example: "The unique ID which identifies the Issuer."     
+          networkId:
+            type: string
+            example: "The unique ID which identifies the network." 
+          callbackUrl:
+            type: string
+            example: "http://url"
+      purchaseFee:
+        type: string
+        example: "Undefined type"
+      pointsNeeded:
+        type: object
+        properties: 
+          value:
+            type: integer
+            example: 10
+          currencyType:
+            type: string
+            example: "The currency type of the amount."
+          currencyCode:
+            type: string
+            example: "The currency code of the amount."
+          currencyDescription:
+            type: string
+            example: "The long description of the currency."
+      partnerPointValue:
+        type: object
+        properties: 
+          value:
+            type: integer
+            example: 10
+          currencyType:
+            type: string
+            example: "The currency type of the amount."
+          currencyCode:
+            type: string
+            example: "The currency code of the amount."
+          currencyDescription:
+            type: string
+            example: "The long description of the currency."
+      simulation:
+        type: boolean
+  CreateCustomerRequest:
+    type: object
+    properties:
+      keyname:
+        type: string
+        example: "keyname"
+      sender:
+        type: string
+        example: "sender"
+      CardAcquisitionRequest:
+        $ref: "#/definitions/CardAcquisitionRequest"
+  CancelCustomerRequest:
+    type: object
+    properties:
+      keyname:
+        type: string
+        example: "keyname"
+      sender:
+        type: string
+        example: "sender"
+      CardCancellationRequest:
+        $ref: "#/definitions/CardCancellationRequest"
+  ProductSku:
+      type: object
+      required:
+        - "skuId"
+      properties:
+        skuId:
+          description: "SkuId for the product"
+          type: string
+          example: "TCCAIRFRANCEsku001"
+        productId:
+          description: "ProductId for the product"
+          type: string
+          example: "TCCAIRFRANCE"
+        commerceItemId:
+          description: "CommerceItemId for the product"
+          type: string
+          example: "ci19393136109551"
+        displayName:
+          description: "Name to display for the client"
+          type: string
+          example: "AirFrance/KLM"
+        partnerCode:
+          description: "Type of customer"
+          type: string 
+          enum:
+              - "TCC"
+        productType:
+          description: "Type of product"
+          type: string
+          example: "type_points"
+        active:
+          description: "If the ProductSku it's active or not"
+          type: boolean
+        listPrice:
+          description: "Ration for Livelo Points to Partners Points, always is 1:1"
+          type: integer
+          example: "1"
+        currency:
+          description: "Type of currency used in the transactions"
+          type: string
+          enum: 
+            - "PTS" 
